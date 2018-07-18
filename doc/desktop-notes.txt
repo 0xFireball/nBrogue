@@ -1,6 +1,4 @@
-This document describes functionality specific to the Windows build.
-
-Be sure to read Readme.rtf, too!
+This document describes functionality specific to the Desktop build.
 
 ---
 
