@@ -1,9 +1,32 @@
-LIBTCODDIR=libtcod-1.5.2
-SDLDIR=SDL-1.2.14
-CFLAGS=$(FLAGS) -I$(LIBTCODDIR)/include -I$(SDLDIR)/include -IBrogueCode -IPlatformCode -DBROGUE_TCOD -Wall
+LIBTCOD_PATH=libtcod-1.5.1
+LIBSDL_PATH=SDL-1.2.14
+
+CC = gcc
+CXX = g++
+
+# Platform and binary
+PLATFORM = LINUX
+
+EXE = nBrogue
+EXT = bin
+
+ifeq ($(PLATFORM),WINDOWS)
+  EXT = exe
+endif
+
+# Libraries
+LIBS = -lSDL
+ifeq ($(PLATFORM),WINDOWS)
+  LIBS += -ltcod-mingw
+endif
+ifeq ($(PLATFORM),LINUX)
+  LIBS += -ltcod
+endif
+
+CFLAGS=$(FLAGS) -I$(LIBTCOD_PATH)/include -I$(LIBSDL_PATH)/include -IBrogueCode -IPlatformCode -DBROGUE_TCOD -Wall
 
 %.o : %.c
-	gcc $(CFLAGS) -O2 -s -o $@ -c $< 
+	$(CC) $(CFLAGS) -O2 -s -o $@ -c $<
 
 OBJS=BrogueCode/Architect.o \
 	BrogueCode/Combat.o \
@@ -12,6 +35,8 @@ OBJS=BrogueCode/Architect.o \
 	BrogueCode/IO.o \
 	BrogueCode/Buttons.o \
 	BrogueCode/MainMenu.o \
+	BrogueCode/Grid.o \
+	BrogueCode/Time.o \
 	BrogueCode/Items.o \
 	BrogueCode/Light.o \
 	BrogueCode/Monsters.o \
@@ -23,10 +48,15 @@ OBJS=BrogueCode/Architect.o \
 	PlatformCode/platformdependent.o \
 	PlatformCode/tcod-platform.o 
 
-all : brogue
+all: brogue
 
-brogue-icon.o : brogue-icon.ico icon.rc
-	windres icon.rc brogue-icon.o
+icon: $(NOOP)
 
-brogue : ${OBJS} brogue-icon.o 
-	g++ -o brogue.exe ${OBJS} brogue-icon.o -L. -ltcod-mingw -lSDL -L$(LIBTCODDIR)/ -static-libgcc -static-libstdc++ -mwindows
+brogue: ${OBJS} icon
+	g++ -o $(EXE).$(EXT) ${OBJS} -L.  -L$(LIBTCOD_PATH)/lib $(LIBS) -static-libgcc -static-libstdc++
+
+clean:
+	find . -name \*.o -type f -delete
+	rm $(EXE).$(EXT)
+
+.PHONY: clean
