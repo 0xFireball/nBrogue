@@ -1,7 +1,7 @@
 
 # nBrogue (v1.18)
 
-nBrogue - a fork of [gBrogue](https://github.com/0xFireball/nBrogue)
+nBrogue - a fork of [gBrogue](https://github.com/gbelo/gBrogue/)
 
 nBrogue is currently based on gBrogue v1.18.02.11.
 
