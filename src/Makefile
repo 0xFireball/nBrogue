@@ -23,37 +23,26 @@ ifeq ($(PLATFORM),LINUX)
   LIBS += -ltcod
 endif
 
-CFLAGS=$(FLAGS) -I$(LIBTCOD_PATH)/include -I$(LIBSDL_PATH)/include -IBrogueCode -IPlatformCode -DBROGUE_TCOD -Wall
+CFLAGS=$(FLAGS) -I$(LIBTCOD_PATH)/include -I$(LIBSDL_PATH)/include -IBrogueCode -IPlatformCode -DBROGUE_TCOD -Wall -O2
 
-%.o : %.c
-	$(CC) $(CFLAGS) -O2 -s -o $@ -c $<
+OBJDIR=obj
+SRCEXT := c
+OBJEXT := o
 
-OBJS=BrogueCode/Architect.o \
-	BrogueCode/Combat.o \
-	BrogueCode/Dijkstra.o \
-	BrogueCode/Globals.o \
-	BrogueCode/IO.o \
-	BrogueCode/Buttons.o \
-	BrogueCode/MainMenu.o \
-	BrogueCode/Grid.o \
-	BrogueCode/Time.o \
-	BrogueCode/Items.o \
-	BrogueCode/Light.o \
-	BrogueCode/Monsters.o \
-	BrogueCode/Movement.o \
-	BrogueCode/RogueMain.o \
-	BrogueCode/Random.o \
-	BrogueCode/Recordings.o \
-	PlatformCode/main.o \
-	PlatformCode/platformdependent.o \
-	PlatformCode/tcod-platform.o 
+SOURCES := $(shell find . -name \*.$(SRCEXT))
+OBJECTS := $(addprefix $(OBJDIR)/, $(patsubst %.$(SRCEXT), %.$(OBJEXT), $(SOURCES)))
+
+$(OBJDIR)/%.o: %.c
+	$(info ($^))
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 all: brogue
 
 icon: $(NOOP)
 
-brogue: ${OBJS} icon
-	g++ -o $(EXE).$(EXT) ${OBJS} -L.  -L$(LIBTCOD_PATH)/lib $(LIBS) -static-libgcc -static-libstdc++
+brogue: $(OBJECTS) icon
+	g++ -o $(EXE).$(EXT) ${OBJECTS} -L. -L$(LIBTCOD_PATH)/lib $(LIBS) -static-libgcc -static-libstdc++
 
 clean:
 	find . -name \*.o -type f -delete
