@@ -54,7 +54,7 @@
 #define USE_UNICODE
 
 // version string -- no more than 16 bytes:
-#define BROGUE_VERSION_STRING "v1.18.03.25"
+#define BROGUE_VERSION_STRING "v1.18"
 
 // debug macros -- define DEBUGGING as 1 to enable wizard mode.
 
